@@ -1,163 +1,111 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the structure for a binary tree node
 struct Node {
     int data;
-    struct Node *left;
+    struct Node* left;
     struct Node *right;
 };
 
-// Function to create a new node
-struct Node* createNode(int data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(1);
-    }
-    newNode->data = data;
-    newNode->left = NULL;
-    newNode->right = NULL;
-    return newNode;
+struct Node* make(int d) {
+    struct Node* n = malloc(sizeof(struct Node));
+    n->data = d;
+    n->left = n->right = NULL;
+    return n;
 }
 
-// Function to count the number of nodes in a binary tree
-int countNodes(struct Node* root) {
-    if (root == NULL) {
-        return 0;
-    }
-    return 1 + countNodes(root->left) + countNodes(root->right);
+int howmany(struct Node* r) {
+    if (!r) return 0;
+    return howmany(r->left) + 1 + howmany(r->right);
 }
 
-// Function to display a binary tree using inorder traversal
-void displayTree(struct Node* root) {
-    if (root != NULL) {
-        displayTree(root->left);
-        printf("%d ", root->data);
-        displayTree(root->right);
+void show(struct Node* r) {
+    if (r) {
+        show(r->left);
+        printf("%d ",r->data);
+        show(r->right);
     }
 }
 
-// The required function to compare three binary trees
-void compareBinaryTree(struct Node *A, struct Node *B, struct Node *C) {
-    int countA = countNodes(A);
-    int countB = countNodes(B);
-    int countC = countNodes(C);
+void check(struct Node *x, struct Node *y, struct Node *z) {
+    int a = howmany(x), b = howmany(y), c = howmany(z);
 
-    printf("Number of nodes in Tree A: %d\n", countA);
-    printf("Number of nodes in Tree B: %d\n", countB);
-    printf("Number of nodes in Tree C: %d\n", countC);
+    printf("Tree A: %d\nTree B: %d\nTree C: %d\n", a, b, c);
 
-    if (countA >= countB && countA >= countC) {
-        printf("Tree A has the highest number of nodes (%d nodes).\n", countA);
-        printf("Tree A elements (inorder): ");
-        displayTree(A);
-        printf("\n");
-    } else if (countB >= countA && countB >= countC) {
-        printf("Tree B has the highest number of nodes (%d nodes).\n", countB);
-        printf("Tree B elements (inorder): ");
-        displayTree(B);
-        printf("\n");
+    if (a >= b && a >= c) {
+        printf("Largest is A (%d)\nNodes: ",a);
+        show(x);
+    } else if (b >=a && b >=c) {
+        printf("Largest is B (%d)\nNodes: ",b);
+        show(y);
     } else {
-        printf("Tree C has the highest number of nodes (%d nodes).\n", countC);
-        printf("Tree C elements (inorder): ");
-        displayTree(C);
-        printf("\n");
+        printf("Largest is C (%d)\nNodes: ",c);
+        show(z);
     }
+    printf("\n\n");
 }
 
-// Function to free memory allocated for the tree
-void freeTree(struct Node* root) {
-    if (root != NULL) {
-        freeTree(root->left);
-        freeTree(root->right);
-        free(root);
+void cleanup(struct Node* r) {
+    if (r) {
+        cleanup(r->left);
+        cleanup(r->right);
+        free(r);
     }
-}
-
-// Test case creation function
-void runTestCase(int testNum, struct Node* A, struct Node* B, struct Node* C) {
-    printf("\n===== Test Case %d =====\n", testNum);
-    compareBinaryTree(A, B, C);
 }
 
 int main() {
-    // Test Case 1: Three different sized trees
-    printf("Creating Test Case 1: Three trees with different number of nodes\n");
+    struct Node* a1 = make(1);
+    a1->left = make(2);
+    a1->right = make(3);
+    a1->left->left = make(4);
+    a1->left->right = make(5);
+    a1->right->left = make(6);
+    a1->right->right = make(7);
 
-    // Tree A with 7 nodes
-    struct Node* treeA1 = createNode(1);
-    treeA1->left = createNode(2);
-    treeA1->right = createNode(3);
-    treeA1->left->left = createNode(4);
-    treeA1->left->right = createNode(5);
-    treeA1->right->left = createNode(6);
-    treeA1->right->right = createNode(7);
+    struct Node* b1 = make(10);
+    b1->left = make(20);
+    b1->right = make(30);
 
-    // Tree B with 3 nodes
-    struct Node* treeB1 = createNode(10);
-    treeB1->left = createNode(20);
-    treeB1->right = createNode(30);
+    struct Node* c1 = make(100);
+    c1->left = make(200);
+    c1->right = make(300);
+    c1->left->left = make(400);
+    c1->left->right = make(500);
 
-    // Tree C with 5 nodes
-    struct Node* treeC1 = createNode(100);
-    treeC1->left = createNode(200);
-    treeC1->right = createNode(300);
-    treeC1->left->left = createNode(400);
-    treeC1->left->right = createNode(500);
+    printf("  Test 1 \n");
+    check(a1, b1, c1);
 
-    runTestCase(1, treeA1, treeB1, treeC1);
+    struct Node* a2 = make(5);
+    a2->left = make(3);
+    a2->right = make(7);
 
-    // Test Case 2: Trees with same number of nodes
-    printf("\nCreating Test Case 2: Two trees with equal highest number of nodes\n");
+    struct Node* b2 = make(10);
+    b2->left = make(5);
+    b2->right = make(15);
+    b2->left->left = make(3);
+    b2->right->right = make(20);
 
-    // Tree A with 3 nodes
-    struct Node* treeA2 = createNode(5);
-    treeA2->left = createNode(3);
-    treeA2->right = createNode(7);
+    struct Node* c2 = make(50);
+    c2->left = make(30);
+    c2->right = make(70);
+    c2->left->right = make(40);
+    c2->right->left = make(60);
 
-    // Tree B with 5 nodes
-    struct Node* treeB2 = createNode(10);
-    treeB2->left = createNode(5);
-    treeB2->right = createNode(15);
-    treeB2->left->left = createNode(3);
-    treeB2->right->right = createNode(20);
+    printf(" Test 2 \n");
+    check(a2, b2, c2);
 
-    // Tree C with 5 nodes
-    struct Node* treeC2 = createNode(50);
-    treeC2->left = createNode(30);
-    treeC2->right = createNode(70);
-    treeC2->left->right = createNode(40);
-    treeC2->right->left = createNode(60);
+    struct Node* a3 = NULL;
+    struct Node* b3 = make(42);
+    struct Node* c3 = make(99);
+    c3->left = make(88);
+    c3->right = make(77);
 
-    runTestCase(2, treeA2, treeB2, treeC2);
+    printf("   Test 3  \n");
+    check(a3, b3, c3);
 
-    // Test Case 3: Empty and non-empty trees
-    printf("\nCreating Test Case 3: Empty and non-empty trees\n");
-
-    // Tree A is empty
-    struct Node* treeA3 = NULL;
-
-    // Tree B with 1 node
-    struct Node* treeB3 = createNode(42);
-
-    // Tree C with 3 nodes
-    struct Node* treeC3 = createNode(99);
-    treeC3->left = createNode(88);
-    treeC3->right = createNode(77);
-
-    runTestCase(3, treeA3, treeB3, treeC3);
-
-    // Free all allocated memory
-    freeTree(treeA1);
-    freeTree(treeB1);
-    freeTree(treeC1);
-    freeTree(treeA2);
-    freeTree(treeB2);
-    freeTree(treeC2);
-    // treeA3 is NULL, no need to free
-    freeTree(treeB3);
-    freeTree(treeC3);
+    cleanup(a1); cleanup(b1); cleanup(c1);
+    cleanup(a2); cleanup(b2); cleanup(c2);
+    cleanup(b3); cleanup(c3);
 
     return 0;
 }
