@@ -1,3 +1,10 @@
+
+/*  FUAD MOHAMED ABDINOOR   SCT221-0226/2023
+    ARNOLD HENRY  SCT221-0335/2023
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
